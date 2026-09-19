@@ -1,2 +1,2 @@
 all:
-	gcc 1.c -o a
+	gcc 3.c -o a
