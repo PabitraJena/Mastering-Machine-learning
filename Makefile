@@ -1,12 +1,4 @@
-CC = gcc
-
-LIBS = -Wall -Wextra
-
-SRC = 5.c
-TARGET = a.exe
-
-$(TARGET): $(SRC)
-	$(CC) $(SRC) -o $(TARGET) $(LIBS)
-
-clean:
-	del $(TARGET)
+all:
+	gcc 6.c -o a.exe -Wall -Wextra
+opt:
+	gcc -O3 -march=native -ffast-math -DNDEBUG 6.c -o a.exe

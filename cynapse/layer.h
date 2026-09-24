@@ -105,9 +105,7 @@ void BackwardLayer(Layer *layer, Matrix *gradient){
         layer->d_biases.data[i] = dz.data[i];
 
         for (int j = 0; j < layer->input_size; j++){
-            layer->d_weights.data[
-                i * layer->input_size + j
-            ] = dz.data[i] * layer->input.data[j];
+            layer->d_weights.data[ i * layer->input_size + j] = dz.data[i] * layer->input.data[j];
         }
     }
 

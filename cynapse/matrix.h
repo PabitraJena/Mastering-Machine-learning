@@ -44,40 +44,41 @@ void FreeMatrix(Matrix *m){
     m->cols = 0;
 }
 
-void MatrixMul( Matrix *result, const Matrix *a, const Matrix *b){
+void MatrixMul(Matrix *result, const Matrix *a, const Matrix *b){
     if (!result || !a || !b){
         log_message(INFO, "Invalid matrices passed to Multiply");
         return;
     }
 
-    if (!a->data || !b->data){
+    if (!a->data || !b->data || !result->data){
         log_message(INFO, "Invalid data in matrices");
         return;
     }
 
     if (a->cols != b->rows){
-        log_message(INFO, "Incompatiable dimensions of multiplication");
+        log_message(INFO, "Incompatible dimensions of multiplication");
         return;
     }
-    Matrix temp = CreateMatrix(a->rows, b->cols);
 
-    if (!temp.data){
+    if (result->rows != a->rows || result->cols != b->cols){
+        log_message(INFO, "Invalid result matrix dimensions");
         return;
     }
 
     for (int i = 0; i < a->rows; i++){
         for (int j = 0; j < b->cols; j++){
-            float sum = 0.0;
+            float sum = 0.0f;
+
             for (int k = 0; k < a->cols; k++){
-                sum += a->data[i * a->cols + k] * b->data[k * b->cols + j];
+                sum += a->data[i * a->cols + k] *
+                       b->data[k * b->cols + j];
             }
-            temp.data[i * temp.cols + j] = sum;
+
+            result->data[i * result->cols + j] = sum;
         }
     }
-
-    FreeMatrix(result);
-    *result = temp;
 }
+
 
 void TransposeMatrix(Matrix *result, Matrix *m){
     
@@ -139,3 +140,15 @@ void MatrixSet(Matrix *m, int row, int col, float value){
 
     m->data[(size_t)row * m->cols + col] = value;
 }
+
+int ArgMax(Matrix *m){
+    int index = 0;
+    for (int i = 1; i < m->rows; i++){
+        if (m->data[i] > m->data[index]){
+            index = i;
+        }
+    }
+
+    return index;
+}
+
