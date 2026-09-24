@@ -80,7 +80,7 @@ void ForwardLayer(Layer *layer, Matrix* input){
     
     // z = W * x + b
     MatrixMul(&layer->z, &layer->weights, input);
-    MatrixAdd(&layer->z, &layer->biases);
+    AddMatrix(&layer->z, &layer->biases);
 
     for (int i = 0; i < layer->output_size; i++){
         layer->output.data[i] = ActivationForward(layer->activation, layer->z.data[i]);

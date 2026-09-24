@@ -81,14 +81,14 @@ void MatrixMul( Matrix *result, const Matrix *a, const Matrix *b){
 
 void TransposeMatrix(Matrix *result, Matrix *m){
     
-    for(size_t r = 0; r < m->rows; r++){
-        for(size_t c = 0;c < m->cols; c++){
+    for(int r = 0; r < m->rows; r++){
+        for(int c = 0;c < m->cols; c++){
             result->data[c * result->cols + r] = m->data[r * m->cols + c];
         }
     }
 }
 
-void MatrixAdd(Matrix *a, const Matrix *b){
+void AddMatrix(Matrix *a, Matrix *b){
     if (!a || !b){
         log_message(INFO, "Invalid matrices passed to Multiply");
         return;
@@ -114,7 +114,7 @@ void MatrixAdd(Matrix *a, const Matrix *b){
 
 
 
-float MatrixGet(const Matrix *m, int row, int col){
+float MatrixGet(Matrix *m, int row, int col){
     if (!m || !m->data){
         log_message(INFO, "Invalid matrix or data");
         return 0.0f;
