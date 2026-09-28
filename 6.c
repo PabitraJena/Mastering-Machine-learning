@@ -143,16 +143,14 @@ void PrintImage(MNISTImages *images, int index){
 }
 
 int main(){
-    srand(67);
+    srand(time(NULL));
 
     MNISTImages images = LoadImages("data/train-images.idx3-ubyte");
-    log_message(INFO, "Images: %u", images.count);
-    log_message(INFO, "Size: %ux%u", images.rows, images.cols);
-
+    log_message(INFO, "Images: %u | Size: %ux%u", images.count, images.rows, images.cols);
     MNISTLabels labels = LoadLabels("data/train-labels.idx1-ubyte");
     log_message(INFO, "Labels: %u", labels.count);
 
-    int index = rand() % 784 + 1;
+    int index = rand() % images.count;
 
     PrintImage(&images, index);
     log_message(INFO, "Label: %d", labels.data[index]);
@@ -168,7 +166,7 @@ int main(){
     
     NeuralNetwork nn = CreateNetwork( 3, layer_sizes, activations);
 
-    int epochs = 3;
+    int epochs = 5;
     float learning_rate = 0.001f;
     Matrix input = CreateMatrix((int)image_size, 1);
     Matrix probabilities = CreateMatrix(10, 1);
@@ -187,7 +185,6 @@ int main(){
             if (index % 1000 == 0){
                 log_message(SUCCESS, "Epoch %d: image %u / %u", ep + 1, index, images.count);
             }
-
 
             NetworkForward(&nn, &input);
 
@@ -217,8 +214,19 @@ int main(){
         
     }
 
-    int test_index = rand() % 784 + 1;
+    Matrix test_input = CreateMatrix((int)image_size, 1);
+    int test_index = rand() % images.count;
+    for (size_t i = 0; i < image_size; i++){
+        test_input.data[i] = images.data[test_index * image_size + i] / 255.0f;
+    }
+    
+    NetworkForward(&nn, &test_input);
+
+    Matrix *last_layer = &nn.layers[nn.num_layers - 1].output;
+    Softmax(last_layer, &probabilities);
+
     int test_pred = ArgMax(&probabilities);
+    
     PrintImage(&images,test_index);
     printf("Predicted Label: %d\n", test_pred);
     printf("Actual Label: %d\n", labels.data[test_index]);
